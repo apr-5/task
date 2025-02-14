@@ -24,6 +24,8 @@ class UserCreateView(APIView):
         }
 
         user = User.objects.create_user(**vaildated_data)
+
+        serializer = UserSerializer(user)
         return Response(serializer.data, status=201)
     
 
