@@ -51,15 +51,3 @@ class UserSigninView(APIView):
             }
         )
     
-
-class UserSignoutView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def post(self, request):
-        refresh_token = request.data.get("refresh")
-
-        if not refresh_token:
-            return Response({"message": "로그아웃이 되지 않았습니다."}, status=400)
-        token = RefreshToken(refresh_token)
-        token.blacklist()
-        return Response({"message": "로그아웃이 완료되었습니다."}, status=205)
