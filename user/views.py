@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .vaildators import vaildate_user_data
 from .models import User
+from .serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserCreateView(APIView):
@@ -24,7 +26,7 @@ class UserCreateView(APIView):
         return Response(serializer.data, status=201)
     
 
-class UserLoginView(APIView):
+class UserSigninView(APIView):
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -45,4 +47,16 @@ class UserLoginView(APIView):
                 "user_info": serializer.data,
             }
         )
-        
+    
+
+class UserSignoutView(APIView)
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        refresh_token = request.data.get("refresh")
+
+        if not refresh_token:
+            return Response({"message": "로그아웃이 되지 않았습니다."}, status=400)
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response({"message": "로그아웃이 완료되었습니다."}, status=205)
