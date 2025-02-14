@@ -9,6 +9,7 @@ from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
+
 class UserCreateView(APIView):
     def post(self, request):
         # 유효성 검사하기
@@ -49,7 +50,7 @@ class UserSigninView(APIView):
         )
     
 
-class UserSignoutView(APIView)
+class UserSignoutView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
