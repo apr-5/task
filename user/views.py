@@ -1,16 +1,18 @@
-from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .vaildators import vaildate_user_data
 from .models import User
-from .serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated
-
-
+from .serializers import UserSerializer, SigninSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 class UserCreateView(APIView):
+    @swagger_auto_schema(
+        request_body=UserSerializer,
+        responses={201: openapi.Response("회원가입 성공", UserSerializer)}
+    )
     def post(self, request):
         # 유효성 검사하기
         rlt_message = vaildate_user_data(request.data)
@@ -28,8 +30,13 @@ class UserCreateView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data, status=201)
     
+    
 
 class UserSigninView(APIView):
+    @swagger_auto_schema(
+        request_body=SigninSerializer,
+        responses={201: openapi.Response("회원가입 성공", SigninSerializer)}
+    )
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -41,7 +48,7 @@ class UserSigninView(APIView):
             )
         refresh = RefreshToken.for_user(user)
 
-        serializer = UserSerializer(user)
+        serializer = SigninSerializer(user)
 
         return Response(
             {
